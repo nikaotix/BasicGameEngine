@@ -2,13 +2,34 @@
 
 EntityID Scene::NewEntity()
 {
+    if (!freeEntities.empty()) {
+        EntityIndex newIndex = freeEntities.back();
+        freeEntities.pop_back();
+        EntityID newID = CreateEntityId(newIndex, GetEntityVersion(entities[newIndex].id)); //restore the ID with the new version from the delete
+        entities[newIndex].id = newID;
+        return entities[newIndex].id;
+    }
     entities.push_back({ entities.size(), ComponentMask() });
     return entities.back().id;
+}
+
+void Scene::DeleteEntity(EntityID id)
+{
+    EntityIndex index = GetEntityIndex(id);
+    EntityID newID = CreateEntityId(EntityIndex(-1), GetEntityVersion(id) + 1); //create invalid entity index and update version
+    entities[index].id = newID; //update that entity ID with the invalid entry
+    entities[index].components.reset(); //clear all components
+    freeEntities.push_back(index); //mark index as free
 }
 
 template<typename T>
 T* Scene::Assign(EntityID id)
 {
+    if (!EntityIsCurrent(id))
+    {
+        return nullptr;
+    }
+
     int componentId = GetID<T>();
 
     if (componentPools.size() <= componentId) // expand the component pool vector if needed
@@ -25,5 +46,35 @@ T* Scene::Assign(EntityID id)
 
     // set component bit in the entity and return the component
     entities[id].mask.set(componentId);
+    return pComponent;
+}
+
+template<typename T>
+void Scene::Remove(EntityID id)
+{
+    if (!EntityIsCurrent(id))
+    {
+        return;
+    }
+
+    int componentId = GetId<T>();
+    entities[GetEntityIndex(id)].mask.reset(componentId);
+
+}
+
+template<typename T>
+T* Scene::Get(EntityID id)
+{
+    if (!EntityIsCurrent(id))
+    {
+
+    }
+
+    uint32_t componentId = GetId<T>();
+    if (!entities[id].mask.test(componentId))
+    {
+        return nullptr;
+    }
+    T* pComponent = static_cast<T*>(componentPools[componentId]->get(id));
     return pComponent;
 }
