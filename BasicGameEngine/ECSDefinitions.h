@@ -1,6 +1,9 @@
 #pragma once
 #include <cstdint>
 
+/// <summary>
+/// ECSDefinitions stores common typedefs/data for the ECS system.
+/// </summary>
 const uint64_t MAX_ENTITIES = 20000;
 const size_t MAX_COMPONENTS = 64;
 

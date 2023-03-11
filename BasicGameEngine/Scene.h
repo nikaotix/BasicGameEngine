@@ -8,6 +8,12 @@
 #include "Velocity.h"
 #include "Name.h"
 
+
+/// <summary>
+/// A Scene contains and manages all the entities and components
+/// in this current game world. Probably entirely possible to have
+/// multiple Scenes at once.
+/// </summary>
 class Scene
 {
 public:
@@ -89,6 +95,12 @@ public:
 	std::vector<ComponentPool*> componentPools;
 };
 
+
+/// <summary>
+/// A SceneView provides an iterator that returns all entities with a
+/// given set of components - used by various Systems to go through the
+/// data quickly.
+/// </summary>
 template <typename... ComponentTypes>
 class SceneView
 {

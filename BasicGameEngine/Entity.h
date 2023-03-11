@@ -4,6 +4,10 @@
 #include <bitset>
 #include "ECSDefinitions.h"
 
+/// <summary>
+/// Entity is a simple ID + bitmask that knows what components it has.
+/// </summary>
+
 typedef struct {
 	EntityID id;
 	ComponentMask components;

@@ -42,6 +42,12 @@
     <ClInclude Include="SimplePhysics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TwoDRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TwoDCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

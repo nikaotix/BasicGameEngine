@@ -1,5 +1,10 @@
 #pragma once
 
+/// <summary>
+/// ComponentID stores the GetID function that generates
+/// the component IDs at runtime.
+/// </summary>
+
 extern int s_componentCounter;
 
 template <class T>

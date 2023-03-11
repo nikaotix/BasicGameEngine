@@ -1,6 +1,9 @@
 #pragma once
 #include "ECSDefinitions.h"
 
+/// <summary>
+/// ComponentPool manages the memory used by each component type.
+/// </summary>
 class ComponentPool
 {
 public:
