@@ -131,7 +131,11 @@
     <ClInclude Include="ECSDefinitions.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ComponentID.h" />
+    <ClInclude Include="Name.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SimplePhysics.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Velocity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -139,6 +143,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SimplePhysics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
