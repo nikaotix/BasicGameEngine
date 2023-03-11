@@ -110,7 +110,6 @@ class SceneView
 		}
 	}
 
-	//TODO: this iterator stuff isn't right! need to build a better implementation.
 	class Iterator
 	{
 	private:
@@ -118,7 +117,7 @@ class SceneView
 		{
 			// check if the index is valid and contains all the components we want
 			return IsEntityValid(pScene->entities[index].id) &&
-				(all || (mask == (mask & pScene->entities[index].mask)));
+				(all || (mask == (mask & pScene->entities[index].components)));
 		}
 
 	public:
@@ -150,7 +149,7 @@ class SceneView
 			{
 				index++;
 			} while (index < pScene->entities.size() && !ValidIndex());
-			return this;
+			return *this;
 		}
 	private:
 		EntityIndex index;

@@ -14,7 +14,7 @@ void ApplyGravity(SceneView<Velocity>& sceneView)
 	{
 		Velocity* vel = scene->Get<Velocity>(*sceneIter);
 		vel->y -= (tickTime * gravityConst);
-		sceneIter++;
+		++sceneIter;
 	}
 }
 
@@ -29,7 +29,7 @@ void ApplyVelocity(SceneView<Velocity, Transform>& sceneView)
 		tf->x += vel->x;
 		tf->y += vel->y;
 		tf->z += vel->z;
-		sceneIter++;
+		++sceneIter;
 	}
 }
 
@@ -45,6 +45,6 @@ void PrintPhysicsStuff(SceneView<Velocity, Transform, Name>& sceneView)
 		std::cout << "Name: " << name->name << std::endl;
 		std::cout << "Velocity: " << vel->x << " " << vel->y << " " << vel->z << std::endl;
 		std::cout << "Transform: " << tf->x << " " << tf->y << " " << tf->z << std::endl;
-		sceneIter++;
+		++sceneIter;
 	}
 }
