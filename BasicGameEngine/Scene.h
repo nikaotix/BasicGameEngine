@@ -34,7 +34,7 @@ public:
 	//TODO: limit access to these somehow
 	std::vector<Entity> entities;
 	std::vector<EntityIndex> freeEntities;
-	std::vector<ComponentPool> componentPools;
+	std::vector<ComponentPool*> componentPools;
 };
 
 template <typename... ComponentTypes>
@@ -50,7 +50,7 @@ class SceneView
 		}
 		else
 		{
-			int componentIds[] = { 0, GetId<ComponentTypes>() ... };
+			int componentIds[] = { 0, GetID<ComponentTypes>()... };
 			for (size_t i = 1; i < (sizeof...(ComponentTypes) + 1); i++)
 			{
 				componentMask.set(componentIds[i]);
@@ -65,7 +65,7 @@ class SceneView
 		{
 			// check if the index is valid and contains all the components we want
 			return IsEntityValid(pScene->entities[index].id) &&
-				(all || (mask == (mask & pScene->entities[index].mask))
+				(all || (mask == (mask & pScene->entities[index].mask)));
 		}
 
 	public:
@@ -95,10 +95,14 @@ class SceneView
 			// Move the iterator forward
 			do
 			{
-				index++
-			} while (index < pScene->entities.size()) && !ValidIndex());
+				index++;
+			} while (index < pScene->entities.size() && !ValidIndex());
 			return *this;
 		}
+		EntityIndex index;
+		Scene* pScene;
+		ComponentMask mask;
+		bool all{ false };
 	};
 
 	const Iterator begin() const

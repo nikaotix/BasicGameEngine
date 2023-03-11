@@ -6,7 +6,7 @@ class ComponentPool
 public:
 	ComponentPool(size_t componentSize)
 	{
-		componentSize = componentSize;
+		this->componentSize = componentSize;
 		pData = new char[MAX_ENTITIES * componentSize];
 	}
 	~ComponentPool()
@@ -21,7 +21,7 @@ public:
 
 
 private:	
-	size_t componentSize;
+	size_t componentSize{ 0 };
 	char* pData {
 		nullptr
 	};

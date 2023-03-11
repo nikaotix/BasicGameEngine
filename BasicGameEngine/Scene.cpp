@@ -38,14 +38,14 @@ T* Scene::Assign(EntityID id)
     }
     if (componentPools[componentId] == nullptr) // create component pool if needed
     {
-        componenetPools[componentId] = new ComponentPool(sizeof(T));
+        componentPools[componentId] = new ComponentPool(sizeof(T));
     }
 
     // create the new component at the entity ID location in the proper pool.
     T* pComponent = new (componentPools[componentId]->get(GetEntityIndex(id))) T();
 
     // set component bit in the entity and return the component
-    entities[id].mask.set(componentId);
+    entities[id].components.set(componentId);
     return pComponent;
 }
 
@@ -57,8 +57,8 @@ void Scene::Remove(EntityID id)
         return;
     }
 
-    int componentId = GetId<T>();
-    entities[GetEntityIndex(id)].mask.reset(componentId);
+    int componentId = GetID<T>();
+    entities[GetEntityIndex(id)].components.reset(componentId);
 
 }
 
@@ -70,8 +70,8 @@ T* Scene::Get(EntityID id)
 
     }
 
-    uint32_t componentId = GetId<T>();
-    if (!entities[id].mask.test(componentId))
+    uint32_t componentId = GetID<T>();
+    if (!entities[id].components.test(componentId))
     {
         return nullptr;
     }
