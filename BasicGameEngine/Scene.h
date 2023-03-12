@@ -5,9 +5,7 @@
 #include "Entity.h"
 #include "ComponentID.h"
 #include "ComponentPool.h"
-#include "Transform.h"
-#include "Velocity.h"
-#include "Name.h"
+#include "Components.h"
 
 
 /// <summary>

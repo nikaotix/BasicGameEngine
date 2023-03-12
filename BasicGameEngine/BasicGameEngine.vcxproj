@@ -137,8 +137,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Components.h" />
+    <ClInclude Include="Scale.h" />
     <ClInclude Include="SDLTwoDRenderer.h" />
+    <ClInclude Include="SDLTwoDSprite.h" />
     <ClInclude Include="SDLUtil.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="TwoDCamera.h" />
     <ClInclude Include="ComponentPool.h" />
     <ClInclude Include="ECSDefinitions.h" />

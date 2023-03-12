@@ -3,8 +3,13 @@
 
 #include <SDL.h>
 #include <string>
+#include <vector>
 #include "TwoDRenderer.h"
+#include "SDLTwoDSprite.h"
 
+/// <summary>
+/// 2D renderer using SDL_Renderer as a backend.
+/// </summary>
 class SDLTwoDRenderer :
     public TwoDRenderer
 {
@@ -15,5 +20,6 @@ public:
     virtual void RenderScene(Scene& scene, TwoDCamera& camera);
 private:
     SDL_Window* window { nullptr };
-    SDL_Surface* surface{ nullptr };
+    SDL_Renderer* renderer{ nullptr };
+    std::vector<SDLTwoDSprite> sprites;
 };
