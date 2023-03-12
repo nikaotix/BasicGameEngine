@@ -24,13 +24,11 @@ int main(int argc, char* argv)
 	tf->z = 0;
 
 
-	auto gravityView = SceneView<Velocity>(myScene);
-	auto velocityView = SceneView<Velocity, Transform>(myScene);
-	auto printView = SceneView<Velocity, Transform, Name>(myScene);
+
 	for (int i = 0; i < 10; i++) {
-		ApplyGravity(gravityView);
-		ApplyVelocity(velocityView);
-		PrintPhysicsStuff(printView);
+		ApplyGravity(myScene);
+		ApplyVelocity(myScene);
+		PrintPhysicsStuff(myScene);
 	}
 
 	while (1) {};

@@ -48,6 +48,12 @@
     <ClInclude Include="TwoDCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SDLTwoDRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -62,5 +68,11 @@
     <ClCompile Include="SimplePhysics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SDLTwoDRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Personal Notes.txt" />
   </ItemGroup>
 </Project>

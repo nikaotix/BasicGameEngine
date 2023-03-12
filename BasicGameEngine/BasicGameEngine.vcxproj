@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="SDLTwoDRenderer.h" />
+    <ClInclude Include="SDLUtil.h" />
     <ClInclude Include="TwoDCamera.h" />
     <ClInclude Include="ComponentPool.h" />
     <ClInclude Include="ECSDefinitions.h" />
@@ -155,7 +157,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SDLTwoDRenderer.cpp" />
     <ClCompile Include="SimplePhysics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Personal Notes.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

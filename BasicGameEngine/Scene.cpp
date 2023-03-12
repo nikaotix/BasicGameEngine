@@ -21,3 +21,11 @@ void Scene::DeleteEntity(EntityID id)
     entities[index].components.reset(); //clear all components
     freeEntities.push_back(index); //mark index as free
 }
+
+void Scene::Update()
+{
+    for (auto& func : systems)
+    {
+        func(*this);
+    }
+}

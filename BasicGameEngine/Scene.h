@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 #include "Entity.h"
 #include "ComponentID.h"
 #include "ComponentPool.h"
@@ -88,11 +89,16 @@ public:
 		return pComponent;
 	}
 
+	// calls all systems registered to this scene in order.
+	// TODO: add system groups (run multiple systems in parallel)
+	// (probably just another vector of functions that get called as threads)
+	void Update();
 
 	//TODO: limit access to these somehow
 	std::vector<Entity> entities;
 	std::vector<EntityIndex> freeEntities;
 	std::vector<ComponentPool*> componentPools;
+	std::vector<std::function<void(Scene&)>> systems;
 };
 
 

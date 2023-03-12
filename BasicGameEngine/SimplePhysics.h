@@ -3,10 +3,13 @@
 
 /// <summary>
 /// SimplePhysics contains a few basic systems used to test the ECS.
+/// TODO - decide how we want to parallelize system execution.
+/// probably combination of systems that can run in parallel (sound updates + physics are separate)
+/// with systems that run themselves in parallel (physics system updates transforms in parallel).
 /// </summary>
 
-void ApplyGravity(SceneView<Velocity>& sceneView);
+void ApplyGravity(Scene& scene);
 
-void ApplyVelocity(SceneView<Velocity, Transform>& sceneView);
+void ApplyVelocity(Scene& scene);
 
-void PrintPhysicsStuff(SceneView<Velocity, Transform, Name>& sceneView);
+void PrintPhysicsStuff(Scene& scene);
