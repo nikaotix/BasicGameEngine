@@ -8,6 +8,9 @@
 #include "Components.h"
 
 
+template <typename... ComponentTypes>
+class SceneView;
+
 /// <summary>
 /// A Scene contains and manages all the entities and components
 /// in this current game world. Probably entirely possible to have
@@ -28,16 +31,28 @@ public:
 		return (entities[GetEntityIndex(id)].id == id);
 	}
 
+	// TODO: move this somewhere else?
+	template <class T>
+	void RegisterComponent(const std::string& name, std::vector<std::pair<std::string, std::function<void(EntityID)>>> vec)
+	{
+		ComponentID componentID = GetID<T>();
+		if (vec.size() <= (componentID))
+		{
+			vec.resize(componentID + 1);
+		}
+		vec.emplace_back(std::make_pair(name, std::function<void(EntityID)>(Assign<T>)));
+	};
+
 	// create component and assign to entity
 	template<typename T>
-	T* Assign(EntityID id)
+	void Assign(EntityID id)
 	{
 		if (!EntityIsCurrent(id))
 		{
-			return nullptr;
+			return;
 		}
 
-		int componentId = GetID<T>();
+		ComponentID componentId = GetID<T>();
 
 		if (componentPools.size() <= componentId) // expand the component pool vector if needed
 		{
@@ -53,7 +68,6 @@ public:
 
 		// set component bit in the entity and return the component
 		entities[id].components.set(componentId);
-		return pComponent;
 	}
 	// remove component from entity bitmask (don't need to clear the data)
 	template<typename T>
@@ -64,7 +78,7 @@ public:
 			return;
 		}
 
-		int componentId = GetID<T>();
+		ComponentID componentId = GetID<T>();
 		entities[GetEntityIndex(id)].components.reset(componentId);
 
 	}
@@ -75,10 +89,10 @@ public:
 	{
 		if (!EntityIsCurrent(id))
 		{
-
+			return nullptr;
 		}
 
-		uint32_t componentId = GetID<T>();
+		ComponentID componentId = GetID<T>();
 		if (!entities[id].components.test(componentId))
 		{
 			return nullptr;
@@ -92,11 +106,13 @@ public:
 	// (probably just another vector of functions that get called as threads)
 	void Update();
 
+
 	//TODO: limit access to these somehow
 	std::vector<Entity> entities;
 	std::vector<EntityIndex> freeEntities;
 	std::vector<ComponentPool*> componentPools;
 	std::vector<std::function<void(Scene&)>> systems;
+	std::vector<std::pair<std::string, std::function<void(EntityID)>>> assignFromComponentIDList;
 };
 
 
@@ -118,7 +134,7 @@ class SceneView
 		}
 		else
 		{
-			int componentIds[] = { 0, GetID<ComponentTypes>()... };
+			ComponentID componentIds[] = { 0, GetID<ComponentTypes>()... };
 			for (size_t i = 1; i < (sizeof...(ComponentTypes) + 1); i++)
 			{
 				componentMask.set(componentIds[i]);

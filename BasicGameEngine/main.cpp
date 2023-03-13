@@ -1,7 +1,7 @@
 #include "Scene.h"
 #include "SimplePhysics.h"
 
-int s_componentCounter = 0;
+size_t s_componentCounter = 0;
 
 // super simple code to exercise simple physics + ECS
 int main(int argc, char* argv)

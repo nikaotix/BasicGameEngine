@@ -10,4 +10,5 @@ const size_t MAX_COMPONENTS = 64;
 typedef uint32_t EntityIndex;
 typedef uint32_t EntityVersion;
 typedef uint64_t EntityID;
+typedef size_t ComponentID;
 typedef std::bitset<MAX_COMPONENTS> ComponentMask;

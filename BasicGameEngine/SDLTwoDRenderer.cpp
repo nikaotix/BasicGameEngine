@@ -18,14 +18,13 @@ SDLTwoDRenderer::SDLTwoDRenderer(const std::string& title, int x, int y, int w, 
 	}
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
-	int ret = SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, SDL_ALPHA_OPAQUE);
-	if (ret < 0)
+
+	if (SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, SDL_ALPHA_OPAQUE))
 	{
 		PrintSDLError("Couldn't set SDL render draw color");
 		return;
 	}
-	ret = SDL_RenderClear(renderer);
-	if (ret < 0)
+	if (SDL_RenderClear(renderer) < 0)
 	{
 		PrintSDLError("Couldn't clear SDL renderer");
 		return;
@@ -43,27 +42,42 @@ SDLTwoDRenderer::~SDLTwoDRenderer()
 }
 
 // TODO: add rotation/flipping to this struct
-typedef struct
+struct RenderCopyExCall
 {
 	SDL_Texture* texture;
-	const SDL_Rect src;
-	const SDL_Rect dst;
-}RenderCopyExCall;
+	SDL_Rect src;
+	SDL_Rect dst;
+	float z;
+	RenderCopyExCall(SDL_Texture* t, const SDL_Rect s, const SDL_Rect d, const float z) :
+		texture(t), src(s), dst(d), z(z) {};
 
+	void operator=(const RenderCopyExCall& r1)
+	{
+		texture = r1.texture;
+		src = r1.src;
+		dst = r1.dst;
+		z = r1.z;
+	}
+	friend bool operator<(const RenderCopyExCall& r1, const RenderCopyExCall& r2)
+	{
+		return r1.z < r2.z;
+	}
+
+};
 // it looks like a system, talks like a system, but isn't really a system
 // since it touches a lot of its own internal state.
 void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 {
 
 	//first we clear the screen
-	int ret = SDL_RenderClear(renderer);
-	if (ret < 0)
+	if (SDL_RenderClear(renderer) < 0)
 	{
 		PrintSDLError("Couldn't clear SDL renderer");
 		return;
 	}
 
 	std::vector<RenderCopyExCall> renderCalls;
+	std::vector <std::shared_lock<std::shared_mutex>> spriteLocks;
 
 	// create render calls for every sprite
 	auto drawables = SceneView<Transform, Sprite>(scene);
@@ -79,18 +93,23 @@ void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 		// TODO: get scale factors from entity if it has them!
 
 		// get the SDL texture/rect
-		const SDLTwoDSprite& sdl_sprite = sprites[sprite->id];
-		SDL_Texture* texture = sdl_sprite.texture; //SDL_Texture is an incomplete class, can't use a reference
-		const SDL_Rect& src = sdl_sprite.frames[sprite->frame];
-	
-		SDL_Rect dst{};
-		// offset sprite world position by camera position
-		dst.x = transform->x - camera.x;
-		dst.y = transform->y - camera.y;
-		dst.w = src.w * scaleX;
-		dst.h = src.h * scaleY;
+		SDLTwoDSprite* sdl_sprite = nullptr;
+		// need to lock each sprite resource we're going to use for this draw.
+		spriteLocks.emplace_back(sprites[sprite->id].GetResource(sdl_sprite));
+		if (sdl_sprite != nullptr)
+		{
+			SDL_Texture* texture = sdl_sprite->texture; //SDL_Texture is an incomplete class, can't use a reference
+			const SDL_Rect& src = sdl_sprite->frames[sprite->frame];
 
-		renderCalls.emplace_back(texture, src, dst);
+			SDL_Rect dst{};
+			// offset sprite world position by camera position
+			dst.x = transform->x - camera.x;
+			dst.y = transform->y - camera.y;
+			dst.w = src.w * scaleX;
+			dst.h = src.h * scaleY;
+
+			renderCalls.emplace_back(texture, src, dst, transform->z);
+		}
 		++drawablesIter;
 	}
 
@@ -102,12 +121,25 @@ void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 	{
 		RenderCopyExCall renderCall = renderCalls[renderCalls.size()]; //element at end is max (it's a heap)
 		std::pop_heap(renderCalls.begin(), renderCalls.end());
-		ret = SDL_RenderCopyEx(renderer, renderCall.texture, &(renderCall.src), &(renderCall.dst),
-			0, nullptr, SDL_FLIP_NONE);
-		if (ret < 0)
+		if (SDL_RenderCopyEx(renderer, renderCall.texture, &(renderCall.src), &(renderCall.dst),
+			0, nullptr, SDL_FLIP_NONE) < 0)
 		{
 			PrintSDLError("RenderCopyEx failed");
 		}
 	}
+
+}
+
+void SDLTwoDRenderer::LoadSprite(const std::string& spriteInfo)
+{
+	std::vector<std::string> infoLines;
+	auto infoStream = std::istringstream(spriteInfo);
+	while (!infoStream.eof())
+	{
+		std::string tmp;
+		std::getline(infoStream, tmp);
+		infoLines.emplace_back(tmp);
+	}
+
 
 }
