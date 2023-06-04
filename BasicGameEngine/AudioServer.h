@@ -1,15 +1,28 @@
 #pragma once
-
-typedef size_t SoundID;
-typedef size_t MusicID;
+#include <string>
+#include "ResourceManager.h"
+#include "Scene.h"
+typedef std::string SoundID;
+typedef std::string MusicID;
 
 class AudioServer
 {
 public:
+
 	virtual void PlaySound(SoundID id) = 0;
+	
 	virtual void StartMusic(MusicID id) = 0;
 	virtual void StopMusic() = 0;
-	virtual unsigned int GetVolume() = 0;
-	virtual void SetVolume(unsigned int vol) = 0;
+	
+	virtual unsigned int GetSoundVolume() = 0;
+	virtual void SetSoundVolume(unsigned int vol) = 0;
+	
+	virtual unsigned int GetMusicVolume() = 0;
+	virtual void SetMusicVolume(unsigned int vol) = 0;
+	
+	// load unloaded sounds/music used in this scene
+	// and unload sounds/music unused in this scene
+	virtual void UpdateSounds(Scene& scene) = 0;
+	virtual void UpdateMusic(Scene& scene) = 0;
 };
 

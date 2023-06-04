@@ -72,7 +72,22 @@
     <ClInclude Include="SDLAudioServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RefCountedResource.h">
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManagerWithOwner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLMixChunkObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLMixMusicObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManagerWithoutOwner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,7 +110,7 @@
     <ClCompile Include="SDLAudioServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RefCountedResource.cpp">
+    <ClCompile Include="SDLTwoDSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

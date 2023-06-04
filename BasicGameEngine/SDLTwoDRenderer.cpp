@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <iostream>
+#include <SDL_image.h>
 #include "SDLTwoDRenderer.h"
 #include "SDLUtil.h"
+#include "Util.h"
 
 SDLTwoDRenderer::SDLTwoDRenderer(const std::string& title, int x, int y, int w, int h, uint32_t flags)
 {
@@ -29,7 +31,14 @@ SDLTwoDRenderer::SDLTwoDRenderer(const std::string& title, int x, int y, int w, 
 		PrintSDLError("Couldn't clear SDL renderer");
 		return;
 	}
-	//Warning: need to initialize the SDL event loop after this!
+
+	if (!(IMG_Init(IMG_INIT_PNG) && IMG_INIT_PNG))
+	{
+		PrintSDLError("Couldn't initialize SDL_image for PNGs");
+		return;
+	}
+
+	spriteRsrcMgr.Init(renderer);
 }
 
 SDLTwoDRenderer::~SDLTwoDRenderer()
@@ -84,6 +93,7 @@ void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 	auto drawablesIter = drawables.begin();
 	while (drawablesIter != drawables.end())
 	{
+		std::cout << "Creating render calls for sprites" << std::endl;
 		// get the drawable info 
 		const auto& sprite = scene.Get<Sprite>(*drawablesIter);
 		const auto& transform = scene.Get<Transform>(*drawablesIter);
@@ -95,18 +105,23 @@ void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 		// get the SDL texture/rect
 		SDLTwoDSprite* sdl_sprite = nullptr;
 		// need to lock each sprite resource we're going to use for this draw.
-		spriteLocks.emplace_back(sprites[sprite->id].GetResource(sdl_sprite));
+		
+		auto lockedRsrc = spriteRsrcMgr.Get(sprite->id);
+		spriteLocks.push_back(std::move(lockedRsrc.lock));
+		sdl_sprite = lockedRsrc.rsrc;
 		if (sdl_sprite != nullptr)
 		{
+			std::cout << "found a sprite to draw" << std::endl;
 			SDL_Texture* texture = sdl_sprite->texture; //SDL_Texture is an incomplete class, can't use a reference
 			const SDL_Rect& src = sdl_sprite->frames[sprite->frame];
 
 			SDL_Rect dst{};
 			// offset sprite world position by camera position
-			dst.x = transform->x - camera.x;
-			dst.y = transform->y - camera.y;
-			dst.w = src.w * scaleX;
-			dst.h = src.h * scaleY;
+			// TODO: define the world coordinate system and have a clean conversion into SDL coords (top-left is 0,0)? 
+			dst.x = int(transform->x - camera.x);
+			dst.y = int(transform->y - camera.y);
+			dst.w = int(src.w * scaleX);
+			dst.h = int(src.h * scaleY);
 
 			renderCalls.emplace_back(texture, src, dst, transform->z);
 		}
@@ -114,12 +129,14 @@ void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 	}
 
 	// sort our render calls by z-depth - larger Z values first for back-to-front draw
-	// TODO: consider a different method of sorting? maybe just move to drawing quads via Vulkan?
 	std::make_heap(renderCalls.begin(), renderCalls.end());
 
+	//Why is this a while, just iterate from back to front you goof
+	/*
 	while (!renderCalls.empty())
 	{
-		RenderCopyExCall renderCall = renderCalls[renderCalls.size()]; //element at end is max (it's a heap)
+		std::cout << "Drawing sprite hopefully" << std::endl;
+		RenderCopyExCall renderCall = renderCalls[renderCalls.size()-1]; //element at end is max (it's a heap)
 		std::pop_heap(renderCalls.begin(), renderCalls.end());
 		if (SDL_RenderCopyEx(renderer, renderCall.texture, &(renderCall.src), &(renderCall.dst),
 			0, nullptr, SDL_FLIP_NONE) < 0)
@@ -127,19 +144,21 @@ void SDLTwoDRenderer::RenderScene(Scene& scene, TwoDCamera& camera)
 			PrintSDLError("RenderCopyEx failed");
 		}
 	}
+	*/
+	for (auto iter = renderCalls.rbegin(); iter != renderCalls.rend(); iter++)
+	{
+		if (SDL_RenderCopyEx(renderer, (*iter).texture, &(*iter).src, &(*iter).dst,
+			0, nullptr, SDL_FLIP_NONE) < 0)
+		{
+			PrintSDLError("RenderCopyEx failed");
+		}
+	}
+
+	SDL_RenderPresent(renderer);
 
 }
 
-void SDLTwoDRenderer::LoadSprite(const std::string& spriteInfo)
+void SDLTwoDRenderer::LoadSprite(SpriteID& sprite)
 {
-	std::vector<std::string> infoLines;
-	auto infoStream = std::istringstream(spriteInfo);
-	while (!infoStream.eof())
-	{
-		std::string tmp;
-		std::getline(infoStream, tmp);
-		infoLines.emplace_back(tmp);
-	}
-
-
+	spriteRsrcMgr.Load(sprite);
 }

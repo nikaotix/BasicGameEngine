@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include "RefCountedResource.h"
+#include "ResourceManagerWithOwner.h"
 #include "TwoDRenderer.h"
 #include "SDLTwoDSprite.h"
 
@@ -21,15 +21,13 @@ public:
     SDLTwoDRenderer(const std::string& title , int x, int y, int w, int h, uint32_t flags);
     ~SDLTwoDRenderer();
     virtual void RenderScene(Scene& scene, TwoDCamera& camera);
+    virtual void LoadSprite(SpriteID& sprite);
 
-    // TODO: figure out a better way to handle loading resources!
-    // Load a sprite from a simple-ish format description:
-    // first line is the ID number of the sprite
-    // second line is the filename of the sprite
-    // following lines are frames in x y w h.
-    void LoadSprite(const std::string& spriteInfo);
 private:
+
     SDL_Window* window { nullptr };
     SDL_Renderer* renderer{ nullptr };
-    std::vector<RefCountedResource<SDLTwoDSprite>> sprites;
+    ResourceManagerWithOwner<SpriteID, SDLTwoDSprite, SDL_Renderer> spriteRsrcMgr;
+
+
 };

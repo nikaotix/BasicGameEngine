@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <unordered_map>
 #include "Scene.h"
 #include "TwoDCamera.h"
 
@@ -8,4 +10,5 @@
 class TwoDRenderer {
 public:
 	virtual void RenderScene(Scene& scene, TwoDCamera& camera) = 0;
+	virtual void LoadSprite(SpriteID& sprite) = 0;
 };

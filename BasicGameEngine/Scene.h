@@ -31,7 +31,7 @@ public:
 		return (entities[GetEntityIndex(id)].id == id);
 	}
 
-	// TODO: move this somewhere else?
+
 	template <class T>
 	void RegisterComponent(const std::string& name, std::vector<std::pair<std::string, std::function<void(EntityID)>>> vec)
 	{
@@ -66,9 +66,10 @@ public:
 		// create the new component at the entity ID location in the proper pool.
 		T* pComponent = new (componentPools[componentId]->get(GetEntityIndex(id))) T();
 
-		// set component bit in the entity and return the component
+		// set component bit in the entity.
 		entities[id].components.set(componentId);
 	}
+
 	// remove component from entity bitmask (don't need to clear the data)
 	template<typename T>
 	void Remove(EntityID id)
