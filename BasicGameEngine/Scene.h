@@ -18,8 +18,24 @@ class SceneView;
 /// </summary>
 class Scene
 {
+
+private:
+	uint64_t sceneBeginPerfCounter;
+	uint64_t currentStepBeginPerfCounter;
+	uint64_t deltaPerfCounter;
 public:
 
+	const uint64_t getSceneBeginPerfCounter() { return sceneBeginPerfCounter; }
+	const uint64_t getCurrentStepBeginPerfCounter() { return currentStepBeginPerfCounter; }
+	const uint64_t getDeltaPerfCounter() { return deltaPerfCounter; }
+
+
+	void Init(uint64_t sceneBeginPerfCounter)
+	{
+		sceneBeginPerfCounter = sceneBeginPerfCounter;
+		currentStepBeginPerfCounter = sceneBeginPerfCounter;
+		deltaPerfCounter = 0;
+	}
 	// create a new entity
 	EntityID NewEntity();
 
@@ -105,7 +121,7 @@ public:
 	// calls all systems registered to this scene in order.
 	// TODO: add system groups (run multiple systems in parallel)
 	// (probably just another vector of functions that get called as threads)
-	void Update();
+	void Update(uint64_t currentTimePerfCounter);
 
 
 	//TODO: limit access to these somehow

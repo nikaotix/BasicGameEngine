@@ -2,8 +2,6 @@
 #include <string>
 #include "ResourceManager.h"
 #include "Scene.h"
-typedef std::string SoundID;
-typedef std::string MusicID;
 
 class AudioServer
 {

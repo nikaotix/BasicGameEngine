@@ -16,15 +16,8 @@ public:
 	SDLMixChunkObj(SoundID id)
 	{
 		//make the filename
-		std::string fileName = id;
-		fileName.append(".wav");
-
-		//make the full file path
-		std::filesystem::path soundPath = std::filesystem::current_path();
-		soundPath.append("sound");
-		soundPath.append(fileName);
-
-		chunk = Mix_LoadWAV(soundPath.u8string().c_str());
+		auto filename = NameToString<SoundID>("sounds", id, ".wav");
+		chunk = Mix_LoadWAV(filename.c_str());
 
 	}
 	~SDLMixChunkObj()

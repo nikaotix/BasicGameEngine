@@ -24,6 +24,8 @@ public:
 	virtual void SetSoundVolume(unsigned int vol);
 	virtual unsigned int GetMusicVolume();
 	virtual void SetMusicVolume(unsigned int vol);
+	virtual void UpdateSounds(Scene& scene);
+	virtual void UpdateMusic(Scene& scene);
 
 private:
 

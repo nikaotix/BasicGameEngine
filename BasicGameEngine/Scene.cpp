@@ -22,10 +22,16 @@ void Scene::DeleteEntity(EntityID id)
     freeEntities.push_back(index); //mark index as free
 }
 
-void Scene::Update()
+void Scene::Update(uint64_t currentTimePerfCounter)
 {
+    deltaPerfCounter = currentTimePerfCounter - currentStepBeginPerfCounter;
+    currentStepBeginPerfCounter = currentTimePerfCounter;
+
+    //TODO: start actually using the update stuff?
+    /*
     for (auto& func : systems)
     {
         func(*this);
     }
+    */
 }

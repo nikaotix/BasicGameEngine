@@ -90,6 +90,15 @@
     <ClInclude Include="ResourceManagerWithoutOwner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Music.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -108,9 +117,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SDLAudioServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SDLTwoDSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

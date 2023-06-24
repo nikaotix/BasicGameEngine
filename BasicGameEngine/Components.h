@@ -9,3 +9,6 @@
 #include "Name.h"
 #include "Transform.h"
 #include "Velocity.h"
+#include "Input.h"
+#include "Sound.h"
+#include "Music.h"

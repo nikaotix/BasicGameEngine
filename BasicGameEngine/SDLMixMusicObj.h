@@ -15,16 +15,10 @@ private:
 public:
 	SDLMixMusicObj(SoundID id)
 	{
-		//make the filename
-		std::string fileName = id;
-		fileName.append(".wav");
 
-		//make the full file path
-		std::filesystem::path musicPath = std::filesystem::current_path();
-		musicPath.append("sound");
-		musicPath.append(fileName);
+		auto filename = NameToString<SoundID>("music", id, ".ogg");
 
-		msc = Mix_LoadMUS(musicPath.u8string().c_str());
+		msc = Mix_LoadMUS(filename.c_str());
 
 	}
 	~SDLMixMusicObj()

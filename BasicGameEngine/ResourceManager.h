@@ -31,6 +31,23 @@ protected:
 	std::unordered_map<ID, CountedResource> rsrcMap;
 	std::shared_mutex mtx;
 
+private:
+	// private free fuction to share between public Free/Cleanup functions.
+	// DON'T USE THIS WITHOUT A LOCK
+	void _Free(ID id)
+	{
+		if (rsrcMap.find(id) == rsrcMap.end())
+		{
+			return false;
+		}
+		if (rsrcMap[id].count != 0)
+		{
+			return false;
+		}
+		free(rsrcMap[id].rsrc);
+		rsrcMap.erase(id);
+	}
+
 public:
 
 
@@ -49,19 +66,15 @@ public:
 
 	virtual void Load(ID id) = 0;
 
+	bool Check(ID id)
+	{
+		return (rsrcMap.find(id) != rsrcMap.end());
+	}
+
 	bool Free(ID id)
 	{
 		std::unique_lock<std::shared_mutex> lock(mtx);
-		if (rsrcMap.find(id) == rsrcMap.end())
-		{
-			return false;
-		}
-		if (rsrcMap[id].count != 0)
-		{
-			return false;
-		}
-		free (rsrcMap[id].rsrc);
-		rsrcMap.erase(id);
+		_Free(id);
 	}
 	
 	void Use(ID id)
@@ -90,6 +103,24 @@ public:
 
 		rsrcMap[id].count--;
 
+	}
+
+	void Cleanup()
+	{
+		std::unique_lock<std::shared_mutex> lock(mtx);
+		std::vector<ID> toFree;
+
+		for (auto rsrcIter = rsrcMap.cbegin(); rsrcIter != rsrcMap.cend(); ++rsrcIter)
+		{
+			if (rsrcIter->second.count <= 0)
+			{
+				toFree.push_back(rsrcIter->first);
+			}
+		}
+		for (auto idIter = toFree.cbegin(); idIter != toFree.cend(); ++idIter)
+		{
+			_Free(*idIter);
+		}
 	}
 
 };

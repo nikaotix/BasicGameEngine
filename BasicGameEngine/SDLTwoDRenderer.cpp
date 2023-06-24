@@ -18,6 +18,7 @@ SDLTwoDRenderer::SDLTwoDRenderer(const std::string& title, int x, int y, int w, 
 		PrintSDLError("Couldn't create SDL window");
 		return;
 	}
+
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
 

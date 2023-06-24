@@ -141,6 +141,8 @@
   <ItemGroup>
     <ClInclude Include="AudioServer.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Music.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ResourceManagerWithoutOwner.h" />
     <ClInclude Include="ResourceManagerWithOwner.h" />
@@ -151,6 +153,7 @@
     <ClInclude Include="SDLTwoDRenderer.h" />
     <ClInclude Include="SDLTwoDSprite.h" />
     <ClInclude Include="SDLUtil.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TwoDCamera.h" />
     <ClInclude Include="ComponentPool.h" />
@@ -173,7 +176,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SDLAudioServer.cpp" />
     <ClCompile Include="SDLTwoDRenderer.cpp" />
-    <ClCompile Include="SDLTwoDSprite.cpp" />
     <ClCompile Include="SimplePhysics.cpp" />
   </ItemGroup>
   <ItemGroup>
